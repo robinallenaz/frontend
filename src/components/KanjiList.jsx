@@ -25,7 +25,6 @@ function KanjiList() {
     if (window.confirm('Are you sure you want to delete this kanji?')) {
       try {
         await kanjiApi.deleteKanji(id);
-        // Remove the deleted kanji from our list
         setKanjiList(kanjiList.filter(kanji => kanji._id !== id));
       } catch (err) {
         setError('Failed to delete kanji');
@@ -33,67 +32,60 @@ function KanjiList() {
     }
   };
 
-  // Use useEffect to fetch data when component mounts
   useEffect(() => {
     fetchKanji();
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
-  // Show loading state
-  if (loading) {
-    return <div className="loading">Loading kanji...</div>;
-  }
-
-  // Show error state
-  if (error) {
-    return <div className="error">{error}</div>;
-  }
+  if (loading) return <div className="loading">Loading kanji...</div>;
+  if (error) return <div className="error">{error}</div>;
 
   return (
-    <div>
-      {/* Header section with title and add button */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1>Kanji List</h1>
-        <Link to="/add" className="btn btn-primary">Add New Kanji</Link>
+    <div className="kanji-list-container">
+      {/* Hero section */}
+      <div className="hero-section">
+        <h1>Kanji Collection</h1>
+        <p>Explore and manage your kanji learning journey</p>
+        <Link to="/add" className="btn btn-primary add-kanji-btn">
+          Add New Kanji
+        </Link>
       </div>
 
       {/* Grid of kanji cards */}
       <div className="kanji-grid">
         {kanjiList.map((kanji) => (
           <div key={kanji._id} className="kanji-card">
-            {/* Main kanji character */}
-            <div className="kanji-character">{kanji.kanji}</div>
-            
-            {/* Kanji details */}
-            <div className="kanji-details">
-              <p><strong>Onyomi:</strong> {kanji.onyomi || 'N/A'}</p>
-              <p><strong>Kunyomi:</strong> {kanji.kunyomi || 'N/A'}</p>
-              <p><strong>Meaning:</strong> {kanji.meaning || 'N/A'}</p>
-            </div>
+            <div className="kanji-card-content">
+              {/* Main kanji character */}
+              <div className="kanji-character">{kanji.kanji}</div>
+              
+              {/* Kanji details */}
+              <div className="kanji-details">
+                <p><strong>Onyomi:</strong> {kanji.onyomi || 'N/A'}</p>
+                <p><strong>Kunyomi:</strong> {kanji.kunyomi || 'N/A'}</p>
+                <p><strong>Meaning:</strong> {kanji.meaning || 'N/A'}</p>
+              </div>
 
-            {/* Action buttons */}
-            <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
-              <Link 
-                to={`/edit/${kanji._id}`} 
-                className="btn btn-primary"
-              >
-                Edit
-              </Link>
-              <button 
-                onClick={() => handleDelete(kanji._id)}
-                className="btn btn-danger"
-              >
-                Delete
-              </button>
+              {/* Action buttons */}
+              <div className="kanji-actions">
+                <Link to={`/edit/${kanji._id}`} className="btn btn-secondary">
+                  Edit
+                </Link>
+                <button onClick={() => handleDelete(kanji._id)} className="btn btn-danger">
+                  Delete
+                </button>
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Show message if no kanji found */}
       {kanjiList.length === 0 && (
-        <p style={{ textAlign: 'center', marginTop: '20px' }}>
-          No kanji found. Click "Add New Kanji" to add some!
-        </p>
+        <div className="empty-state">
+          <p>No kanji found. Start by adding some kanji to your collection!</p>
+          <Link to="/add" className="btn btn-primary">
+            Add Your First Kanji
+          </Link>
+        </div>
       )}
     </div>
   );
