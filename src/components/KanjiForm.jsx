@@ -125,17 +125,48 @@ function KanjiForm() {
         Kunyomi: formData.kunyomi
       };
 
+      let createdKanji;
       if (id) {
         // Update existing kanji
-        await kanjiApi.updateKanji(id, backendFormData);
+        createdKanji = await kanjiApi.updateKanji(id, backendFormData);
+        console.log('Updated Kanji:', createdKanji);
       } else {
         // Create new kanji
-        const createdKanji = await kanjiApi.createKanji(backendFormData);
+        createdKanji = await kanjiApi.createKanji(backendFormData);
         console.log('Created Kanji:', createdKanji);
       }
       
       // Navigate back to list after successful submission
-      navigate('/list');
+      // Pass the newly created/updated kanji as navigation state
+      console.log('Navigating with state:', {
+        newKanji: {
+          ...createdKanji,
+          _id: createdKanji._id || id  // Use existing ID or newly created ID
+        }
+      });
+      console.log('Navigation state details:');
+      console.log('  - newKanji:', {
+        ...createdKanji,
+        _id: createdKanji._id || id
+      });
+      console.log('  - navigate function:', navigate);
+      console.log('  - navigate arguments:', '/list', {
+        state: { 
+          newKanji: {
+            ...createdKanji,
+            _id: createdKanji._id || id
+          }
+        } 
+      });
+      
+      navigate('/list', { 
+        state: { 
+          newKanji: {
+            ...createdKanji,
+            _id: createdKanji._id || id  // Use existing ID or newly created ID
+          }
+        } 
+      });
     } catch (err) {
       console.error('Full error details:', err);
       

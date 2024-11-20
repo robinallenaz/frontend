@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { kanjiApi } from '../services/api';
 
 function KanjiList() {
@@ -7,6 +7,7 @@ function KanjiList() {
   const [kanjiList, setKanjiList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
 
   // Function to fetch kanji data from our API
   const fetchKanji = async () => {
@@ -71,6 +72,41 @@ function KanjiList() {
     fetchKanji();
   }, []);
 
+  useEffect(() => {
+    if (location.state?.added) {
+      fetchKanji();
+    }
+  }, [location]);
+
+  useEffect(() => {
+    const newKanji = location.state?.newKanji;
+    
+    console.log('KanjiList location state:', location.state);
+    console.log('Received new kanji:', newKanji);
+    
+    if (newKanji) {
+      // Normalize the kanji object to ensure consistent property names
+      const normalizedKanji = {
+        _id: newKanji._id,
+        kanji: newKanji.Kanji || newKanji.kanji,
+        onyomi: newKanji.Onyomi || newKanji.onyomi,
+        kunyomi: newKanji.Kunyomi || newKanji.kunyomi,
+        meaning: newKanji.Meaning || newKanji.meaning
+      };
+
+      // Add the new kanji to the top of the list
+      setKanjiList(prevList => {
+        console.log('Previous kanji list:', prevList);
+        const updatedList = [normalizedKanji, ...prevList];
+        console.log('Updated kanji list:', updatedList);
+        return updatedList;
+      });
+      
+      // Clear the navigation state to prevent duplicate additions
+      window.history.replaceState(null, '');
+    }
+  }, [location.state]);
+
   if (loading) return <div className="loading">Loading kanji...</div>;
   if (error) return <div className="error">{error}</div>;
 
@@ -91,13 +127,13 @@ function KanjiList() {
           <div key={kanji._id} className="kanji-card">
             <div className="kanji-card-content">
               {/* Main kanji character */}
-              <div className="kanji-character">{kanji.kanji}</div>
+              <div className="kanji-character">{kanji.Kanji || kanji.kanji}</div>
               
               {/* Kanji details */}
               <div className="kanji-details">
-                <p><strong>Onyomi:</strong> {kanji.onyomi || 'N/A'}</p>
-                <p><strong>Kunyomi:</strong> {kanji.kunyomi || 'N/A'}</p>
-                <p><strong>Meaning:</strong> {kanji.meaning || 'N/A'}</p>
+                <p><strong>Onyomi:</strong> {kanji.Onyomi || kanji.onyomi || 'N/A'}</p>
+                <p><strong>Kunyomi:</strong> {kanji.Kunyomi || kanji.kunyomi || 'N/A'}</p>
+                <p><strong>Meaning:</strong> {kanji.Meaning || kanji.meaning || 'N/A'}</p>
               </div>
 
               {/* Action buttons */}
