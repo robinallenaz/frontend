@@ -595,3 +595,60 @@ body {
     padding: 0 4rem;
   }
 }
+
+/* Kanji Suggestion Card Styles */
+.kanji-suggestion-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  max-width: 500px;
+  width: 100%;
+  margin: 2rem auto;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.kanji-suggestion-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.kanji-suggestion-card h3 {
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.kanji-suggestion-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.kanji-suggestion-details p {
+  background-color: var(--secondary-color);
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.suggestion-label {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.suggestion-value {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.kanji-suggestion-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}

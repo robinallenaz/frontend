@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { kanjiApi } from '../services/api';
+import axios from 'axios';
 
 function KanjiForm() {
   // Get the id parameter from the URL (if editing)
@@ -15,10 +16,61 @@ function KanjiForm() {
     meaning: ''
   });
 
+  // State for suggestion
+  const [suggestion, setSuggestion] = useState(null);
+
   // State for form submission and loading
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  // Fetch a random grade 1 kanji from external API
+  const fetchRandomKanjiSuggestion = async () => {
+    try {
+      // Fetch grade 1 kanji list
+      const gradeResponse = await axios.get('https://kanjiapi.dev/v1/kanji/grade-1');
+      const gradeKanji = gradeResponse.data;
+      
+      // Select a random kanji
+      const randomKanji = gradeKanji[Math.floor(Math.random() * gradeKanji.length)];
+      
+      // Fetch detailed info for the random kanji
+      const detailResponse = await axios.get(`https://kanjiapi.dev/v1/kanji/${randomKanji}`);
+      const kanjiDetails = detailResponse.data;
+      
+      // Only suggest if all required fields are present
+      if (
+        kanjiDetails.kanji && 
+        kanjiDetails.meanings && kanjiDetails.meanings.length > 0 &&
+        kanjiDetails.kun_readings && kanjiDetails.kun_readings.length > 0 &&
+        kanjiDetails.on_readings && kanjiDetails.on_readings.length > 0
+      ) {
+        setSuggestion({
+          kanji: kanjiDetails.kanji,
+          meaning: kanjiDetails.meanings[0],
+          kunyomi: kanjiDetails.kun_readings[0],
+          onyomi: kanjiDetails.on_readings[0]
+        });
+      } else {
+        setSuggestion(null);
+      }
+    } catch (err) {
+      console.error('Error fetching kanji suggestion:', err);
+      setSuggestion(null);
+    }
+  };
+
+  // Use suggestion to populate form
+  const useSuggestion = () => {
+    if (suggestion) {
+      setFormData({
+        kanji: suggestion.kanji,
+        meaning: suggestion.meaning,
+        kunyomi: suggestion.kunyomi,
+        onyomi: suggestion.onyomi
+      });
+    }
+  };
 
   // If we have an ID, fetch the kanji data when component mounts
   useEffect(() => {
@@ -38,6 +90,9 @@ function KanjiForm() {
           setError('Failed to fetch kanji data');
           setLoading(false);
         });
+    } else {
+      // Fetch a suggestion when creating a new kanji
+      fetchRandomKanjiSuggestion();
     }
   }, [id]);
 
@@ -57,105 +112,132 @@ function KanjiForm() {
     setError(null);
 
     try {
-      // Validate required field
-      if (!formData.kanji.trim()) {
-        throw new Error('Kanji character is required');
-      }
-
-      // If we have an ID, update existing kanji, otherwise create new
       if (id) {
+        // Update existing kanji
         await kanjiApi.updateKanji(id, formData);
       } else {
+        // Create new kanji
         await kanjiApi.createKanji(formData);
       }
       
-      // Redirect back to the list page on success
-      navigate('/');
+      // Navigate back to list after successful submission
+      navigate('/list');
     } catch (err) {
-      setError(err.message || 'Failed to save kanji');
+      setError('Failed to save kanji');
       setSubmitting(false);
     }
   };
 
-  // Show loading state while fetching kanji data
+  // Render loading state
   if (loading) {
-    return <div className="loading">Loading kanji data...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
-    <div>
+    <div className="kanji-form-container">
       <h1>{id ? 'Edit Kanji' : 'Add New Kanji'}</h1>
-
-      {/* Show error message if there's an error */}
-      {error && <div className="error">{error}</div>}
+      
+      {/* Suggestion section */}
+      {!id && suggestion && (
+        <div className="kanji-suggestion-card">
+          <h3>Kanji Suggestion</h3>
+          <div className="kanji-suggestion-details">
+            <p>
+              <span className="suggestion-label">Kanji</span>
+              <span className="suggestion-value">{suggestion.kanji}</span>
+            </p>
+            <p>
+              <span className="suggestion-label">Meaning</span>
+              <span className="suggestion-value">{suggestion.meaning}</span>
+            </p>
+            <p>
+              <span className="suggestion-label">Kunyomi</span>
+              <span className="suggestion-value">{suggestion.kunyomi}</span>
+            </p>
+            <p>
+              <span className="suggestion-label">Onyomi</span>
+              <span className="suggestion-value">{suggestion.onyomi}</span>
+            </p>
+          </div>
+          <div className="kanji-suggestion-actions">
+            <button 
+              type="button" 
+              className="btn btn-secondary" 
+              onClick={useSuggestion}
+            >
+              Use Suggestion
+            </button>
+            <button 
+              type="button" 
+              className="btn btn-primary" 
+              onClick={fetchRandomKanjiSuggestion}
+            >
+              Get New Suggestion
+            </button>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit}>
-        {/* Kanji Character Input */}
         <div className="form-group">
-          <label className="form-label">
-            Kanji Character*
-            <input
-              type="text"
-              name="kanji"
-              value={formData.kanji}
-              onChange={handleChange}
-              className="form-input"
-              required
-              placeholder="Enter kanji character"
-            />
-          </label>
+          <label htmlFor="kanji">Kanji Character*</label>
+          <input
+            type="text"
+            id="kanji"
+            name="kanji"
+            value={formData.kanji}
+            onChange={handleChange}
+            className="form-input"
+            required
+            placeholder="Enter kanji character"
+          />
         </div>
 
-        {/* Onyomi Reading Input */}
         <div className="form-group">
-          <label className="form-label">
-            Onyomi Reading
-            <input
-              type="text"
-              name="onyomi"
-              value={formData.onyomi}
-              onChange={handleChange}
-              className="form-input"
-              placeholder="Enter onyomi reading"
-            />
-          </label>
+          <label htmlFor="onyomi">Onyomi Reading</label>
+          <input
+            type="text"
+            id="onyomi"
+            name="onyomi"
+            value={formData.onyomi}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="Enter onyomi reading"
+          />
         </div>
 
-        {/* Kunyomi Reading Input */}
         <div className="form-group">
-          <label className="form-label">
-            Kunyomi Reading
-            <input
-              type="text"
-              name="kunyomi"
-              value={formData.kunyomi}
-              onChange={handleChange}
-              className="form-input"
-              placeholder="Enter kunyomi reading"
-            />
-          </label>
+          <label htmlFor="kunyomi">Kunyomi Reading</label>
+          <input
+            type="text"
+            id="kunyomi"
+            name="kunyomi"
+            value={formData.kunyomi}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="Enter kunyomi reading"
+          />
         </div>
 
-        {/* Meaning Input */}
         <div className="form-group">
-          <label className="form-label">
-            Meaning
-            <input
-              type="text"
-              name="meaning"
-              value={formData.meaning}
-              onChange={handleChange}
-              className="form-input"
-              placeholder="Enter meaning"
-            />
-          </label>
+          <label htmlFor="meaning">Meaning</label>
+          <input
+            type="text"
+            id="meaning"
+            name="meaning"
+            value={formData.meaning}
+            onChange={handleChange}
+            className="form-input"
+            placeholder="Enter meaning"
+          />
         </div>
 
-        {/* Form Actions */}
+        {error && <div className="error">{error}</div>}
+
         <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-          <button
-            type="submit"
-            className="btn btn-primary"
+          <button 
+            type="submit" 
+            className="btn btn-primary" 
             disabled={submitting}
           >
             {submitting ? (id ? 'Saving...' : 'Adding...') : (id ? 'Save Changes' : 'Add Kanji')}
