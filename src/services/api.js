@@ -133,5 +133,16 @@ export const kanjiApi = {
       console.error(`Error deleting kanji with ID ${id}:`, error);
       throw error;
     }
-  }
+  },
+
+  // Delete all kanji from the collection
+  clearAllKanji: async () => {
+    try {
+      const response = await api.delete('/');
+      return response.data;
+    } catch (error) {
+      console.error('Error clearing all kanji:', error);
+      throw error;
+    }
+  },
 };

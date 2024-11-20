@@ -7,6 +7,7 @@ function KanjiList() {
   const [kanjiList, setKanjiList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [newKanjiIds, setNewKanjiIds] = useState([]);
   const location = useLocation();
 
   // Function to fetch kanji data from our API
@@ -68,6 +69,35 @@ function KanjiList() {
     }
   };
 
+  // Function to clear all kanji
+  const clearAllKanji = async () => {
+    // Confirm before clearing
+    const confirmClear = window.confirm(
+      'Are you sure you want to delete ALL kanji in your collection? This action cannot be undone.'
+    );
+
+    if (confirmClear) {
+      try {
+        // Call API to delete all kanji
+        await kanjiApi.clearAllKanji();
+        
+        // Clear the local state
+        setKanjiList([]);
+        
+        // Optional: Show a success message
+        alert('All kanji have been deleted from your collection.');
+      } catch (err) {
+        console.error('Error clearing kanji collection:', err);
+        
+        // More detailed error handling
+        const errorMessage = err.response?.data?.message || 
+          'Failed to clear kanji collection. Please try again.';
+        
+        alert(errorMessage);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchKanji();
   }, []);
@@ -101,6 +131,22 @@ function KanjiList() {
         console.log('Updated kanji list:', updatedList);
         return updatedList;
       });
+
+      // Track the new kanji ID for the "New!" badge
+      setNewKanjiIds(prev => {
+        // Prevent duplicate IDs
+        if (!prev.includes(normalizedKanji._id)) {
+          // Remove the badge after 2 seconds
+          setTimeout(() => {
+            setNewKanjiIds(currentIds => 
+              currentIds.filter(id => id !== normalizedKanji._id)
+            );
+          }, 2000);
+          
+          return [...prev, normalizedKanji._id];
+        }
+        return prev;
+      });
       
       // Clear the navigation state to prevent duplicate additions
       window.history.replaceState(null, '');
@@ -119,6 +165,9 @@ function KanjiList() {
         <Link to="/add" className="btn btn-primary add-kanji-btn">
           Add New Kanji
         </Link>
+        <button onClick={clearAllKanji} className="btn btn-danger clear-all-btn">
+          Clear All Kanji
+        </button>
       </div>
 
       {/* Grid of kanji cards */}
@@ -126,6 +175,11 @@ function KanjiList() {
         {kanjiList.map((kanji) => (
           <div key={kanji._id} className="kanji-card">
             <div className="kanji-card-content">
+              {/* New! Badge */}
+              {newKanjiIds.includes(kanji._id) && (
+                <div className="new-kanji-badge">New!</div>
+              )}
+
               {/* Main kanji character */}
               <div className="kanji-character">{kanji.Kanji || kanji.kanji}</div>
               
