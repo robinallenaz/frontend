@@ -112,18 +112,46 @@ function KanjiForm() {
     setError(null);
 
     try {
+      // Validate form data
+      if (!formData.kanji || !formData.meaning || !formData.onyomi || !formData.kunyomi) {
+        throw new Error('All fields are required');
+      }
+
+      // Transform data to match backend expectations
+      const backendFormData = {
+        Kanji: formData.kanji,
+        Meaning: formData.meaning,
+        Onyomi: formData.onyomi,
+        Kunyomi: formData.kunyomi
+      };
+
       if (id) {
         // Update existing kanji
-        await kanjiApi.updateKanji(id, formData);
+        await kanjiApi.updateKanji(id, backendFormData);
       } else {
         // Create new kanji
-        await kanjiApi.createKanji(formData);
+        const createdKanji = await kanjiApi.createKanji(backendFormData);
+        console.log('Created Kanji:', createdKanji);
       }
       
       // Navigate back to list after successful submission
       navigate('/list');
     } catch (err) {
-      setError('Failed to save kanji');
+      console.error('Full error details:', err);
+      
+      // More specific error handling
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        setError(`Server Error: ${err.response.data.message || 'Failed to save kanji'}`);
+      } else if (err.request) {
+        // The request was made but no response was received
+        setError('No response from server. Please check your network connection.');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        setError(err.message || 'Failed to save kanji');
+      }
+      
       setSubmitting(false);
     }
   };
@@ -137,7 +165,7 @@ function KanjiForm() {
     <div className="kanji-form-container">
       <h1>{id ? 'Edit Kanji' : 'Add New Kanji'}</h1>
       
-      {/* Suggestion section */}
+      {/* Suggestion section - only for new kanji */}
       {!id && suggestion && (
         <div className="kanji-suggestion-card">
           <h3>Kanji Suggestion</h3>

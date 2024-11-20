@@ -11,11 +11,46 @@ function KanjiList() {
   // Function to fetch kanji data from our API
   const fetchKanji = async () => {
     try {
+      setLoading(true);
+      setError(null);
+      
       const data = await kanjiApi.getAllKanji();
-      setKanjiList(data);
+      
+      // Validate data
+      if (!data) {
+        throw new Error('No data received from server');
+      }
+      
+      // Ensure data is an array
+      const kanjiArray = Array.isArray(data) ? data : [data];
+      
+      // Sort by most recently added using createdAt timestamp
+      const sortedData = kanjiArray.sort((a, b) => {
+        // Fallback to _id if createdAt is not available
+        const dateA = new Date(a.createdAt || a._id);
+        const dateB = new Date(b.createdAt || b._id);
+        return dateB - dateA;
+      });
+      
+      setKanjiList(sortedData);
       setLoading(false);
     } catch (err) {
-      setError('Failed to fetch kanji list');
+      // More detailed error handling
+      console.error('Full error details:', err);
+      
+      // Specific error messages based on error type
+      if (err.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        setError(`Server Error: ${err.response.data?.message || 'Failed to fetch kanji list'}`);
+      } else if (err.request) {
+        // The request was made but no response was received
+        setError('No response from server. Please check your network connection.');
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        setError(err.message || 'Failed to fetch kanji list');
+      }
+      
       setLoading(false);
     }
   };
