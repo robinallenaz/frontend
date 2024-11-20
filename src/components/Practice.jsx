@@ -8,6 +8,7 @@ function Practice() {
   const [matchedPairs, setMatchedPairs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [score, setScore] = useState(0);
 
   useEffect(() => {
     fetchKanjiData();
@@ -29,6 +30,7 @@ function Practice() {
       setCards(shuffledCards);
       setSelectedCards([]);
       setMatchedPairs([]);
+      setScore(0);
       setLoading(false);
     } catch (err) {
       console.error('Error fetching kanji:', err);
@@ -57,8 +59,11 @@ function Practice() {
 
       if (firstCard.pairId === secondCard.pairId) {
         // Match found
-        setMatchedPairs([...matchedPairs, newSelectedCards]);
-        setSelectedCards([]);
+        setTimeout(() => {
+          setMatchedPairs([...matchedPairs, newSelectedCards]);
+          setSelectedCards([]);
+          setScore(score + 1);
+        }, 300); // Short delay before cards disappear
       } else {
         // No match - deselect cards after delay
         setTimeout(() => {
@@ -94,6 +99,7 @@ function Practice() {
     <div className="practice-container">
       <h1>Kanji Matching Game</h1>
       <p>Match the kanji with its meaning!</p>
+      <p className="score">Matches: {score} / {cards.length / 2}</p>
       
       <div className="game-board">
         {cards.map(card => (
@@ -104,7 +110,7 @@ function Practice() {
             }`}
             onClick={() => handleCardClick(card.id)}
           >
-            <div className="card-content">
+            <div className="card-content" data-type={card.type}>
               {card.content}
             </div>
           </div>
@@ -114,6 +120,7 @@ function Practice() {
       {matchedPairs.length === cards.length / 2 && (
         <div className="victory-message">
           <h2>Congratulations!</h2>
+          <p>You've matched all the pairs!</p>
           <button onClick={fetchKanjiData}>Play Again</button>
         </div>
       )}

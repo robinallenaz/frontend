@@ -1,0 +1,207 @@
+.practice-container {
+  padding: 0.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.practice-container h1 {
+  margin: 0.5rem 0;
+  font-size: 1.75rem;
+}
+
+.practice-container p {
+  margin: 0.25rem 0;
+}
+
+.game-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin: 0.5rem auto;
+  max-width: 800px;
+  flex-grow: 1;
+}
+
+.card {
+  aspect-ratio: 3/2;
+  cursor: pointer;
+  background: #fff9f0;
+  border: 1px solid #e0d5c1;
+  border-radius: 8px;
+  box-shadow: 
+    2px 2px 4px rgba(0,0,0,0.1),
+    0 0 0 1px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+  opacity: 1;
+  transform: scale(1);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    3px 3px 6px rgba(0,0,0,0.15),
+    0 0 0 1px rgba(0,0,0,0.05);
+}
+
+.card-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  text-align: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Adjust font size based on content type */
+.card-content[data-type="kanji"] {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.card-content[data-type="meaning"] {
+  font-size: 0.9rem;
+  line-height: 1.2;
+  padding: 0.25rem;
+}
+
+.card.selected {
+  border-color: #2196F3;
+  box-shadow: 
+    0 0 10px rgba(33, 150, 243, 0.3),
+    0 0 0 1px #2196F3;
+  background-color: #fff;
+}
+
+.card.matched {
+  animation: disappear 0.5s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes disappear {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1) rotate(2deg);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(5deg);
+    visibility: hidden;
+  }
+}
+
+.victory-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff9f0;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 
+    0 4px 20px rgba(0,0,0,0.15),
+    0 0 0 1px rgba(0,0,0,0.05);
+  z-index: 10;
+  animation: appear 0.5s ease forwards;
+}
+
+.victory-message h2 {
+  margin: 0 0 0.5rem 0;
+}
+
+.victory-message p {
+  margin: 0.25rem 0;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.victory-message button {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1.25rem;
+  font-size: 1.1rem;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.victory-message button:hover {
+  background: #45a049;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+.score {
+  font-size: 1.1rem;
+  margin: 0.25rem 0;
+  color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .practice-container {
+    padding: 0.25rem;
+  }
+
+  .practice-container h1 {
+    font-size: 1.5rem;
+    margin: 0.25rem 0;
+  }
+
+  .game-board {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+    margin: 0.25rem auto;
+    padding: 0.25rem;
+  }
+  
+  .card-content[data-type="kanji"] {
+    font-size: 1.75rem;
+  }
+
+  .card-content[data-type="meaning"] {
+    font-size: 0.85rem;
+    padding: 0.2rem;
+  }
+
+  .victory-message {
+    padding: 1rem;
+    width: 90%;
+    max-width: 300px;
+  }
+}
