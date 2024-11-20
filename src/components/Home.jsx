@@ -7,7 +7,6 @@ function Home() {
       {/* Hero section */}
       <div className="hero-section">
         <h1>Kanji Learning Journey</h1>
-        <p>Explore and master Japanese characters through interactive learning</p>
         <div className="hero-buttons">
           <Link to="/add" className="btn btn-primary">
             Add Custom Kanji
@@ -20,8 +19,6 @@ function Home() {
 
       {/* Gallery section */}
       <div className="gallery-section">
-        <h2>Explore Kanji</h2>
-        <p>Click on any card to reveal meanings and readings</p>
         <KanjiGallery />
       </div>
     </div>
