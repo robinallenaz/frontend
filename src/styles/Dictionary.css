@@ -4,6 +4,10 @@
   padding: 2rem;
 }
 
+.dictionary-container h1 {
+  text-align: center;
+}
+
 .info-text {
   color: #666;
   margin: 1rem 0;
