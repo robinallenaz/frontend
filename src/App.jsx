@@ -7,6 +7,7 @@ import About from './components/About';
 import Navbar from './components/Navbar';
 import KanjiForm from './components/KanjiForm';
 import KanjiGallery from './components/KanjiGallery';
+import Dictionary from './components/Dictionary';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/edit/:id" element={<KanjiForm />} />
             <Route path="/gallery" element={<KanjiGallery />} />
             <Route path="/practice" element={<Practice />} />
+            <Route path="/dictionary" element={<Dictionary />} />
             <Route path="/about" element={<About />} />
           </Routes>
         </div>
