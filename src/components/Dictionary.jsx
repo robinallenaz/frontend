@@ -52,7 +52,7 @@ function Dictionary() {
           type="text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Enter a kanji character"
+          placeholder="Enter Kanji"
           className="search-input"
           maxLength={1}
         />
