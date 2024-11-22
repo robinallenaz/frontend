@@ -79,10 +79,10 @@ function KanjiForm() {
       kanjiApi.getKanjiById(id)
         .then(data => {
           setFormData({
-            kanji: data.kanji || '',
-            onyomi: data.onyomi || '',
-            kunyomi: data.kunyomi || '',
-            meaning: data.meaning || ''
+            kanji: data.Kanji || data.kanji || '',
+            onyomi: data.Onyomi || data.onyomi || '',
+            kunyomi: data.Kunyomi || data.kunyomi || '',
+            meaning: data.Meaning || data.meaning || ''
           });
           setLoading(false);
         })
@@ -305,6 +305,7 @@ function KanjiForm() {
             type="button"
             className="btn"
             onClick={() => navigate('/')}
+
             disabled={submitting}
           >
             Cancel

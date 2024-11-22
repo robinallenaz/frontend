@@ -102,8 +102,8 @@ button {
   position: relative;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   overflow: hidden;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
+  padding: 4rem 2rem;
+  margin-bottom: 2rem;
   text-align: center;
 }
 
@@ -172,12 +172,14 @@ button {
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   font-weight: bold;
+  font-size: 3rem;
 }
 
 .hero-section p {
   margin-bottom: 2rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   font-size: 1.2rem;
+  max-width: 600px;
 }
 
 .hero-buttons {
@@ -195,99 +197,26 @@ button {
   border: 2px solid rgba(255, 182, 193, 0.5);
   color: rgb(255, 255, 255) !important;
   backdrop-filter: blur(5px);
-  z-index: 2;
-  position: relative;
+  padding: 0.8rem 1.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border-radius: 30px;
 }
 
 .hero-section .btn:hover {
-  background: rgba(255, 182, 193, 0.3);
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
-  border-color: rgba(255, 182, 193, 0.8);
-}
-
-.hero-section .btn-primary {
-  background: rgba(255, 182, 193, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .hero-section .btn-danger {
-  background: rgba(220, 53, 69, 0.2);
+  background: rgba(220, 53, 69, 0.1);
   border-color: rgba(220, 53, 69, 0.5);
 }
 
 .hero-section .btn-danger:hover {
-  background: rgba(220, 53, 69, 0.3);
-  border-color: rgba(220, 53, 69, 0.8);
-}
-
-.hero-section .add-kanji-btn,
-.hero-section .clear-all-btn {
-  pointer-events: auto;
-  cursor: pointer;
-  z-index: 10;
-}
-
-.kanji-list-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Sakura petals */
-.sakura {
-  position: absolute;
-  background: #ffd7e6;
-  border-radius: 50%;
-  animation: fallRotate linear infinite;
-}
-
-.sakura::after {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  width: 100%;
-  height: 100%;
-  background: #ffd7e6;
-  border-radius: 50%;
-  transform: rotate(45deg);
-}
-
-/* Gallery section */
-.gallery-section {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-.new-kanji-badge {
-  position: absolute;
-  top: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: red;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-weight: bold;
-  animation: popIn 2s ease-in-out forwards;
-  z-index: 10;
-}
-
-@keyframes popIn {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
+  background: rgba(220, 53, 69, 0.2);
 }
 
 .collections-hero-section {
@@ -298,10 +227,14 @@ button {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 2rem;
+  padding: 4rem 2rem;
+  margin-bottom: 2rem;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   color: white;
   overflow: hidden;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .collections-hero-section h1 {
@@ -320,6 +253,7 @@ button {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   z-index: 2;
   position: relative;
+  max-width: 600px;
 }
 
 .collections-falling-characters {
@@ -413,16 +347,24 @@ button {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+.content-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
 .features-section {
   margin-bottom: 4rem;
 }
 
-.features-section h2 {
+.features-section h2,
+.tech-stack-section h2 {
   text-align: center;
   margin-bottom: 2rem;
   font-size: 2.5rem;
-  text-shadow: 0 0 10px rgba(255, 182, 193, 0.4);
   color: #f5f5f5;
+  text-shadow: 0 0 10px rgba(255, 182, 193, 0.4);
   letter-spacing: 1px;
 }
 
@@ -501,14 +443,7 @@ button {
 
 .tech-stack-section {
   text-align: center;
-}
-
-.tech-stack-section h2 {
-  margin-bottom: 2rem;
-  font-size: 2.5rem;
-  text-shadow: 0 0 10px rgba(255, 182, 193, 0.4);
-  color: #f5f5f5;
-  letter-spacing: 1px;
+  margin-top: 4rem;
 }
 
 .tech-stack-grid {
@@ -516,6 +451,7 @@ button {
   justify-content: center;
   gap: 2rem;
   flex-wrap: wrap;
+  margin-top: 2rem;
 }
 
 .tech-card {
@@ -523,39 +459,38 @@ button {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  padding: 1rem;
+  padding: 1.5rem;
   background: rgba(26, 26, 46, 0.9);
-  border-radius: 8px;
-  min-width: 100px;
+  border-radius: 12px;
+  min-width: 120px;
   transition: all 0.3s ease;
   color: #f5f5f5;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .tech-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   background: rgba(26, 26, 46, 0.95);
+  border-color: rgba(255, 182, 193, 0.4);
 }
 
 .tech-icon {
-  font-size: 2rem;
+  font-size: 2.5rem;
 }
 
 .tech-name {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #f5f5f5;
   letter-spacing: 0.5px;
+  font-weight: 500;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .about-hero h1 {
-    font-size: 2.5rem;
-  }
-
-  .about-hero p {
-    font-size: 1rem;
+  .content-section {
+    padding: 1rem;
   }
 
   .features-grid {
@@ -567,6 +502,11 @@ button {
   }
 
   .tech-card {
-    min-width: 80px;
+    min-width: 100px;
+    padding: 1rem;
+  }
+
+  .feature-card {
+    padding: 1.5rem;
   }
 }
