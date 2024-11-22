@@ -2,6 +2,10 @@
 
 An interactive full-stack web application designed to help users study Japanese Kanji characters through creating custom sets which they can review on their Collection page, or play matching games with on the Practice page. If users do not wish to create a custom kanji set, a default set of kanji is provided for practice.
 
+## Live Site
+
+Visit the live application at: [https://kanjilearn.netlify.app](https://kanjilearn.netlify.app)
+
 The application also includes a Dictionary page that provides dictionary lookup through the [KanjiAPI](https://kanjiapi.dev/).
 
 ## Features
