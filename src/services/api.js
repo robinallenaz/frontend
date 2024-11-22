@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 // Use import.meta.env for Vite environment variables
-const API_URL = 'https://kanji-learn-backend.onrender.com/api/kanji';
+const BASE_URL = 'https://kanji-learn-backend.onrender.com/api';
 
 const api = axios.create({
-  baseURL: API_URL,
+  baseURL: BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
@@ -76,8 +76,8 @@ api.interceptors.response.use(
 export const kanjiApi = {
   getAllKanji: async () => {
     try {
-      console.log('Attempting to fetch all kanji from:', API_URL);
-      const response = await api.get('/');
+      console.log('Attempting to fetch all kanji from:', `${BASE_URL}/kanji`);
+      const response = await api.get('/kanji');
       console.log('Kanji fetch response:', response.data);
       return response.data;
     } catch (error) {
@@ -94,7 +94,7 @@ export const kanjiApi = {
   getKanjiById: async (id) => {
     try {
       console.log(`Fetching kanji with ID: ${id}`);
-      const response = await api.get(`/${id}`);
+      const response = await api.get(`/kanji/${id}`);
       return response.data;
     } catch (error) {
       console.error(`Error fetching kanji with ID ${id}:`, error);
@@ -105,7 +105,7 @@ export const kanjiApi = {
   createKanji: async (kanjiData) => {
     try {
       console.log('Creating new kanji:', kanjiData);
-      const response = await api.post('/', kanjiData);
+      const response = await api.post('/kanji', kanjiData);
       return response.data;
     } catch (error) {
       console.error('Error creating kanji:', error);
@@ -115,34 +115,31 @@ export const kanjiApi = {
 
   updateKanji: async (id, kanjiData) => {
     try {
-      console.log(`Updating kanji with ID: ${id}`, kanjiData);
-      const response = await api.put(`/${id}`, kanjiData);
+      const response = await api.put(`/kanji/${id}`, kanjiData);
       return response.data;
     } catch (error) {
-      console.error(`Error updating kanji with ID ${id}:`, error);
+      console.error('Error updating kanji:', error);
       throw error;
     }
   },
 
   deleteKanji: async (id) => {
     try {
-      console.log(`Deleting kanji with ID: ${id}`);
-      const response = await api.delete(`/${id}`);
+      const response = await api.delete(`/kanji/${id}`);
       return response.data;
     } catch (error) {
-      console.error(`Error deleting kanji with ID ${id}:`, error);
+      console.error('Error deleting kanji:', error);
       throw error;
     }
   },
 
-  // Delete all kanji from the collection
   clearAllKanji: async () => {
     try {
-      const response = await api.delete('/');
+      const response = await api.delete('/kanji');
       return response.data;
     } catch (error) {
       console.error('Error clearing all kanji:', error);
       throw error;
     }
-  },
+  }
 };
