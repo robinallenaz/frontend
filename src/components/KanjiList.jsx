@@ -8,7 +8,28 @@ function KanjiList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newKanjiIds, setNewKanjiIds] = useState([]);
+  const [fallingChars, setFallingChars] = useState([]);
   const location = useLocation();
+
+  const characters = [
+    '漢', '字', 'あ', 'い', 'う', 'え', 'お',
+    'カ', 'キ', 'ク', 'ケ', 'コ', '学', '習'
+  ];
+
+  useEffect(() => {
+    const generateFallingCharacters = () => {
+      const newChars = Array.from({ length: 9 }, (_, index) => ({
+        id: index,
+        char: characters[Math.floor(Math.random() * characters.length)],
+      }));
+      setFallingChars(newChars);
+    };
+
+    generateFallingCharacters();
+    const interval = setInterval(generateFallingCharacters, 10000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Function to fetch kanji data from our API
   const fetchKanji = async () => {
@@ -160,14 +181,23 @@ function KanjiList() {
     <div className="kanji-list-container">
       {/* Hero section */}
       <div className="hero-section">
+        <div className="falling-characters">
+          {fallingChars.map((char) => (
+            <span key={char.id} className="falling-character">
+              {char.char}
+            </span>
+          ))}
+        </div>
         <h1>Kanji Collection</h1>
         <p>Explore and manage your kanji learning journey</p>
-        <Link to="/add" className="btn btn-primary add-kanji-btn">
-          Add New Kanji
-        </Link>
-        <button onClick={clearAllKanji} className="btn btn-danger clear-all-btn">
-          Clear All Kanji
-        </button>
+        <div className="hero-buttons">
+          <Link to="/add" className="btn btn-primary add-kanji-btn">
+            Add New Kanji
+          </Link>
+          <button onClick={clearAllKanji} className="btn btn-danger clear-all-btn">
+            Clear All Kanji
+          </button>
+        </div>
       </div>
 
       {/* Grid of kanji cards */}
