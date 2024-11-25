@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './styles/index.css';
+import './styles/DrawKanji.css';
 import Home from './components/Home';
 import KanjiList from './components/KanjiList';
 import Practice from './components/Practice';
@@ -8,6 +9,7 @@ import Navbar from './components/Navbar';
 import KanjiForm from './components/KanjiForm';
 import KanjiGallery from './components/KanjiGallery';
 import Dictionary from './components/Dictionary';
+import DrawKanji from './components/DrawKanji';
 
 function App() {
   return (
@@ -22,6 +24,7 @@ function App() {
             <Route path="/edit/:id" element={<KanjiForm />} />
             <Route path="/gallery" element={<KanjiGallery />} />
             <Route path="/practice" element={<Practice />} />
+            <Route path="/draw" element={<DrawKanji />} />
             <Route path="/dictionary" element={<Dictionary />} />
             <Route path="/about" element={<About />} />
           </Routes>

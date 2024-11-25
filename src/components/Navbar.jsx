@@ -27,6 +27,9 @@ function Navbar() {
           <Link to="/practice" className={isActive('/practice')}>
             Practice
           </Link>
+          <Link to="/draw" className={isActive('/draw')}>
+            Draw Kanji
+          </Link>
           <Link to="/dictionary" className={isActive('/dictionary')}>
             Dictionary
           </Link>
