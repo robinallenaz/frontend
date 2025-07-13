@@ -7,7 +7,46 @@ const Practice = () => {
   const [selectedCard, setSelectedCard] = useState(null);
   const [matchedPairs, setMatchedPairs] = useState([]);
   const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
   const [showDefaultSetMessage, setShowDefaultSetMessage] = useState(false);
+
+  // Load saved state on component mount
+  useEffect(() => {
+    const savedHighScore = localStorage.getItem('kanjiHighScore');
+    if (savedHighScore) {
+      setHighScore(parseInt(savedHighScore));
+    }
+
+    const savedGameState = localStorage.getItem('kanjiGameState');
+    if (savedGameState) {
+      const { cards, matchedPairs, score } = JSON.parse(savedGameState);
+      setCards(cards);
+      setMatchedPairs(matchedPairs);
+      setScore(score);
+    } else {
+      fetchRandomKanji();
+    }
+  }, []);
+
+  // Save game state whenever it changes
+  useEffect(() => {
+    if (cards.length > 0) {
+      const gameState = {
+        cards,
+        matchedPairs,
+        score
+      };
+      localStorage.setItem('kanjiGameState', JSON.stringify(gameState));
+    }
+  }, [cards, matchedPairs, score]);
+
+  // Update high score when score changes
+  useEffect(() => {
+    if (score > highScore) {
+      setHighScore(score);
+      localStorage.setItem('kanjiHighScore', score.toString());
+    }
+  }, [score, highScore]);
 
   const fetchRandomKanji = async () => {
     try {
@@ -32,10 +71,6 @@ const Practice = () => {
       console.error('Error fetching kanji:', error);
     }
   };
-
-  useEffect(() => {
-    fetchRandomKanji();
-  }, []);
 
   const handleCardClick = (card) => {
     if (matchedPairs.includes(card.id)) {
@@ -74,7 +109,10 @@ const Practice = () => {
       )}
       <div className="game-header">
         <h2>Match the Kanji</h2>
-        <div className="score">Score: {score}</div>
+        <div className="score-container">
+          <div className="score">Score: {score}</div>
+          <div className="high-score">High Score: {highScore}</div>
+        </div>
         <button onClick={fetchRandomKanji} className="reset-button">New Game</button>
       </div>
       <div className="card-grid">

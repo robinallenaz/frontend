@@ -147,6 +147,28 @@
   box-shadow: 0 3px 6px rgba(0,0,0,0.2);
 }
 
+.score-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.score, .high-score {
+  font-size: 1.1rem;
+  color: #666;
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.high-score {
+  color: #4CAF50;
+  font-weight: 500;
+}
+
 .score {
   font-size: 1.1rem;
   margin: 0.25rem 0;
